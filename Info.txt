@@ -41,4 +41,17 @@ Backend :- Real time servers, signaling servers, Nodejs and Go.
 Database can be connected too.
 
 Websocket servers or socket.io 
+------------------------------------
+Many users can have access to this server,All users are stored in UserManager class, as people join they are pushed to queue,waiting for talking to each other,then two people are taken from queue and sended them to RoomManager,first guy "send offer",and the other guy responds via webRtc.
+
+SPD - Session description protocol
+
+user 1 ----> Server -----> user2
+Both exchanges their IP with each other via server and they can talk. P2P
+even if server crashes, they can talk,send files,etc
+This type of server is called Signaling server.
+
+The server in middle , taking an offer from one side and sending to other side, then taking response from other side and sending again to first side.letting two parties exchange IP port protocols,encoding they supports.
+
+
 
