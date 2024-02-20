@@ -1,0 +1,45 @@
+Omegle is easier to built than Google meet.
+-Multiple peer connections is the reason
+
+Person to Person -> its easy between two peoples -> WebRTC
+
+Person to Multiple peoples -> live match,live streaming
+
+WebRTC -> Web Real Time Communication
+- It is a UDP based protocol
+- Even when peoples are talking , the packets gets lost , in video streaming its a common things.
+
+Benefits:-
+(1) Browser support
+- It is sort of part of spec of creating a browser.It should support webRTC based construct.Browsers can speak WebRTC,browser can talk webRTC,debugg webRTC, creating a connection to other browser via WebRTC.
+- Your browser can talk http and other protocol too , one of it is WebRTC
+- WebRTC is used for live streaming    
+
+- UDP based
+- it is also used for transferring data, transferring files, audio,video bunch of things
+- P2P (biggest benefits - architecture and it leads to its downfall)
+
+in P2P we don't need a server,people can directly to each other,P1 sends a video to P2 and P2 browser sends video to P1.
+
+- The problem in P2P is:
+If we have a big call,Suppose I have to send video to 5 people,they will aslo send back,therefore incoming bandwidth and outgoing bandwidth will be screwed.
+- At scale, webRTC is done in different way.
+
+Browser can't do certain things:
+- directly connecting to database is harder.
+- talking some other weird protocol that might exist is harder.
+
+(2) UDP can fallback + TCP...
+
+- scalability is problem
+- Not a problem for two people if they are talking
+- Can support many peoples ,but only two can talk.
+
+
+frontend : - React/ Web RTC Api's
+Backend :- Real time servers, signaling servers, Nodejs and Go.
+Database can be connected too.
+
+
+
+
