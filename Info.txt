@@ -40,6 +40,5 @@ frontend : - React/ Web RTC Api's
 Backend :- Real time servers, signaling servers, Nodejs and Go.
 Database can be connected too.
 
-
-
+Websocket servers or socket.io 
 
