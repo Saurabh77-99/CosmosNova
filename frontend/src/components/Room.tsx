@@ -9,31 +9,56 @@ export const Room = () => {
     const name = searchParams.get('name');
     const [lobby,setLobby] = useState(true);
     const [socket,setSocket] = useState<null|Socket>(null);
+    const [sendingPc, setSendingPc] = useState<null | RTCPeerConnection>(null);
+    const [receivingPc, setReceivingPc] = useState<null | RTCPeerConnection>(null);
+    const [remoteVideoTrack, setRemoteVideoTrack] = useState<MediaStreamTrack | null>(null);
+    const [localVideoTrack, setlocalVideoTrack] = useState<MediaStreamTrack | null>(null);
+    const [remoteAudioTrack, setRemoteAudioTrack] = useState<MediaStreamTrack | null>(null);
+    const [localAudioTrack, setLocalAudioTrack] = useState<MediaStreamTrack | null>(null);
 
     useEffect(() => {
         const socket = io(URL);
-
-        socket.on('send-offer',({roomId})=>{
-            alert("send offer please");
+        socket.on('send-offer', async ({roomId})=>{
             setLobby(false);
+            const pc = new RTCPeerConnection();
+            setSendingPc(pc);
+            
+            const sdp = await pc.createOffer();
             socket.emit("offer",{
-                sdp:"",
+                sdp,
                 roomId
             })
         });
-
+        
         socket.on("offer",({roomId,offer})=>{
-            alert("send answer please");
             setLobby(false);
+            const pc = new RTCPeerConnection();
+            pc.setRemoteDescription({sdp:offer,type:"offer"})
+            const sdp = await pc.createAnswer();
+            //trickle ice
+            setReceivingPc(pc);
+            pc.ontrack = (({track,type})=>{
+                if(type == 'audio'){
+                    setRemoteAudioTrack(track);
+                }else{
+                    setRemoteVideoTrack(track);
+                }
+            })
             socket.emit("answer",{
                 roomId,
-                sdp:""
+                sdp:sdp
             });
         });
 
         socket.on("answer",({roomId,answer})=>{
             setLobby(false);
-            alert("connection done");
+            setSendingPc(pc =>{
+                pc?.setRemoteDescription({
+                    type:"answer",
+                    sdp:answer
+                })
+                return pc;
+            })
         });
 
         socket.on("lobby",()=>{
@@ -51,7 +76,7 @@ export const Room = () => {
     }
     return <div>
         Hi {name}
-        <video width={400} height={400}></video>
-        <video width={400} height={400}></video>
+        <video width={400} height={400}/>
+        <video width={400} height={400}/>
     </div>
 }
