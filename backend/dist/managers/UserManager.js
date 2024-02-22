@@ -13,7 +13,7 @@ class UserManager {
             name, socket
         });
         this.queue.push(socket.id);
-        socket.send("lobby");
+        socket.emit("lobby");
         this.clearQueue();
         this.initHandlers(socket);
     }
@@ -28,28 +28,27 @@ class UserManager {
         if (this.queue.length < 2) {
             return;
         }
-        // console.log(this.users);
-        // console.log(this.queue);
         const id1 = this.queue.pop();
         const id2 = this.queue.pop();
         console.log("id is " + id1 + " " + id2);
         const user1 = this.users.find(x => x.socket.id === id1);
         const user2 = this.users.find(x => x.socket.id === id2);
-        // console.log(user1);
-        // console.log(user2);
         if (!user1 || !user2) {
             return;
         }
-        console.log("creating room");
+        console.log("creating roonm");
         const room = this.roomManager.createRoom(user1, user2);
         this.clearQueue();
     }
     initHandlers(socket) {
         socket.on("offer", ({ sdp, roomId }) => {
-            this.roomManager.onOffer(roomId, sdp);
+            this.roomManager.onOffer(roomId, sdp, socket.id);
         });
         socket.on("answer", ({ sdp, roomId }) => {
-            this.roomManager.onAnswer(roomId, sdp);
+            this.roomManager.onAnswer(roomId, sdp, socket.id);
+        });
+        socket.on("add-ice-candidate", ({ candidate, roomId, type }) => {
+            this.roomManager.onIceCandidates(roomId, socket.id, candidate, type);
         });
     }
 }
